@@ -1,0 +1,9 @@
+<div *ngIf="gameModes$ | async as gameModes">
+    <div class="list-group">
+        <ng-container *ngFor="let mode of gameModes">
+            <a class="list-group-item list-group-item-action list-group-item-dark" [routerLink]="['/lobby', mode._id]">
+                {{ mode.name }}
+            </a>
+        </ng-container>
+    </div>
+</div>

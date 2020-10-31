@@ -1,0 +1,22 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Meleee Client",
+            "type": "node",
+            "request": "launch",
+            "protocol": "inspector",
+            "preLaunchTask": "Build.All",
+            "cwd": "${workspaceFolder}",
+            "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+            "runtimeArgs": [
+                "--serve",
+                ".",
+                "--remote-debugging-port=9222"
+            ],
+            "windows": {
+                "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
+            }
+        }
+    ]
+}

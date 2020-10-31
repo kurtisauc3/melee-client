@@ -1,0 +1,11 @@
+{
+    "PAGES": {
+        "NOTFOUND": "Not found",
+        "DASHBOARD": {
+            "PLAY": "Play",
+            "HOME": "Home",
+            "MATCHHISTORY": "Match History",
+            "TEAMMANAGER": "Team Manager"
+        }
+    }
+}
