@@ -35,7 +35,7 @@ export class ApiService
 
     public GetGameModes(): Observable<ApiResponse>
     {
-        const controller = '/api/game/getGameModes';
+        const controller = '/api/game';
         if (this.dataCache[controller]) return of(this.dataCache[controller]);
         else if (this.dataCache$[controller]) return this.dataCache$[controller];
         else
@@ -53,7 +53,7 @@ export class ApiService
 
     private get(controller): Observable<ApiResponse>
     {
-        return this.http.get<ApiResponse>(`${this.API_ENDPOINT}${controller}`).pipe(
+        return this.http.get<ApiResponse>(`${this.API_ENDPOINT}${controller}`, { headers: this.authenticationHeaders }).pipe(
             filter(data => data?.SUCCESS),
             map(data =>
             {
