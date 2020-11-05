@@ -14,6 +14,11 @@ let profile = null;
 let refreshToken = null;
 let user_metadata = null;
 
+function getAuth0Domain()
+{
+    return auth0Domain;
+}
+
 function getAccessToken()
 {
     return accessToken;
@@ -31,21 +36,7 @@ function getUserMetadata()
 
 function getAuthenticationURL()
 {
-    return (
-        "https://" +
-        auth0Domain +
-        "/authorize?" +
-        "audience=" +
-        apiIdentifier +
-        "&" +
-        "scope=openid profile offline_access&" +
-        "response_type=code&" +
-        "client_id=" +
-        clientId +
-        "&" +
-        "redirect_uri=" +
-        redirectUri
-    );
+    return `https://${auth0Domain}/authorize?audience=${apiIdentifier}&scope=openid profile offline_access email&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
 }
 
 async function refreshTokens()
@@ -149,4 +140,5 @@ module.exports = {
     loadTokens,
     logout,
     refreshTokens,
+    getAuth0Domain
 };

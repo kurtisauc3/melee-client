@@ -13,6 +13,7 @@ export class ElectronService
     remote: typeof remote;
     childProcess: typeof childProcess;
     fs: typeof fs;
+    authService;
 
     get isElectron(): boolean
     {
@@ -28,13 +29,33 @@ export class ElectronService
             this.webFrame = window.require('electron').webFrame;
             this.childProcess = window.require('child_process');
             this.fs = window.require('fs');
+            this.authService = this.remote.require('./auth-service');
         }
+    }
+
+    get auth0Domain(): string
+    {
+        return this.authService.getAuth0Domain();
     }
 
     get bearerToken(): string
     {
-        if (this.isElectron) return this.remote.require('./auth-service').getAccessToken();
-        return null
+        return this.authService.getAccessToken();
+    }
+
+
+    get userProfile()
+    {
+        return this.authService.getProfile();
+    }
+
+    get user_id(): string
+    {
+        if (this.userProfile?.sub?.split('|')[0] === 'auth0')
+        {
+            return this.userProfile.sub.split('|')[1];
+        }
+        return null;
     }
 
 }

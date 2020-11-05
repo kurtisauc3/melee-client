@@ -1,1 +1,8 @@
-<p>lobby works!</p>
+<ng-container *ngIf="lobby$ | async as lobby"; else #loadinglobby>
+    <p>game id: {{ lobby.game_id }}</p>
+    <p>owner id: {{ lobby.owner_id }}</p>
+    <button (click)="leaveLobby()">leave lobby</button>
+</ng-container>
+<ng-template #loadinglobby>
+    loading lobby...
+</ng-template>

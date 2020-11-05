@@ -12,7 +12,6 @@ export class ApiService
     public API_CACHE_KEY: string = "api";
     public API_ENDPOINT: string = "http://localhost:3000";
 
-    public dataCache: { [key: string]: any } = {};
     public dataCache$: { [key: string]: Observable<any> } = {};
 
     constructor(private http: HttpClient, private electron: ElectronService, private cache: CacheService)
@@ -22,7 +21,6 @@ export class ApiService
 
     public initializeApiService()
     {
-        this.dataCache = this.cache.get(this.API_CACHE_KEY) ?? {};
     }
 
     public get authenticationHeaders(): HttpHeaders
@@ -33,34 +31,63 @@ export class ApiService
         });
     }
 
-    public GetGameModes(): Observable<ApiResponse>
+    private get(controller): Observable<ApiResponse>
     {
-        const controller = '/api/game';
-        if (this.dataCache[controller]) return of(this.dataCache[controller]);
-        else if (this.dataCache$[controller]) return this.dataCache$[controller];
+        if (this.dataCache$[controller]) return this.dataCache$[controller];
         else
         {
-            this.dataCache$[controller] = this.get(controller);
+            this.dataCache$[controller] = this.http.get<ApiResponse>(`${this.API_ENDPOINT}${controller}`, { headers: this.authenticationHeaders })
+                .pipe(filter(data => data?.SUCCESS), map(data =>
+                {
+                    this.dataCache$[controller] = null;
+                    return data;
+                }), share());
             return this.dataCache$[controller];
         }
     }
 
-    public CreateLobby(gameModeId: number): Observable<boolean>
+    private post(controller, req): Observable<ApiResponse>
     {
-        return of(false);
-        //return this.http.post<boolean>(`${this.API_ENDPOINT}/createLobby`, gameModeId, { headers: this.authenticationHeaders });
+        if (this.dataCache$[controller]) return this.dataCache$[controller];
+        else
+        {
+            this.dataCache$[controller] = this.http.post<ApiResponse>(`${this.API_ENDPOINT}${controller}`, req, { headers: this.authenticationHeaders })
+                .pipe(filter(data => data?.SUCCESS), map(data =>
+                    {
+                        this.dataCache$[controller] = null;
+                        return data;
+                    }), share());
+            return this.dataCache$[controller];
+        }
     }
 
-    private get(controller): Observable<ApiResponse>
+    public GetProfile(): Observable<ApiResponse>
     {
-        return this.http.get<ApiResponse>(`${this.API_ENDPOINT}${controller}`, { headers: this.authenticationHeaders }).pipe(
-            filter(data => data?.SUCCESS),
-            map(data =>
-            {
-                this.dataCache$[controller] = null;
-                this.dataCache[controller] = data;
-                this.cache.set(this.dataCache, this.API_CACHE_KEY);
-                return data;
-            }))
+        return this.get(`/api/user/${this.electron.user_id}`);
+    }
+
+    public GetGames(): Observable<ApiResponse>
+    {
+        return this.get('/api/game');
+    }
+
+    public GetLobby(lobbyId: string): Observable<ApiResponse>
+    {
+        return this.get(`/api/lobby/${lobbyId}`);
+    }
+
+    public CreateLobby(request): Observable<ApiResponse>
+    {
+        return this.post(`/api/lobby`, request);
+    }
+
+    public JoinLobby(request): Observable<ApiResponse>
+    {
+        return this.post(`/api/lobby/${request.id}`, request);
+    }
+
+    public LeaveLobby(): Observable<ApiResponse>
+    {
+        return this.post('/api/lobby/leave', {});
     }
 }

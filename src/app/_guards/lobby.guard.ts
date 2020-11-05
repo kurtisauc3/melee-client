@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { ApiService } from '../_services/api.service';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class LobbyGuard implements CanActivate
@@ -10,6 +11,12 @@ export class LobbyGuard implements CanActivate
 
     public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean>
     {
-        return this.api.CreateLobby(route.params.id)
+        return this.api.GetLobby(route.params.id)
+            .pipe(map(data =>
+            {
+                const result = data?.SUCCESS;
+                if (!result) this.router.navigate(['select-game-mode']);
+                return result;
+            }))
     }
 }
