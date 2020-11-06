@@ -17,14 +17,17 @@ export class SocketService
 
     public initializeSocketService()
     {
-        this.socket = socketIo(this.api.API_ENDPOINT);
+        this.socket = socketIo(this.api.API_ENDPOINT,
+        {
+            query: { user_id: this.electron.user_id }
+        });
     }
 
-    public onUserUpdated(): Observable<string>
+    public onLobbyIdUpdated(): Observable<string>
     {
         return new Observable<string>(observer =>
         {
-            this.socket.on('user_updated', (data: string) => observer.next(data));
+            this.socket.on('lobby_id_updated', (data: string) => observer.next(data));
         });
     }
 

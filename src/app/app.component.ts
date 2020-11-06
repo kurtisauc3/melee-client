@@ -33,10 +33,7 @@ export class AppComponent implements OnInit
     initializeIoConnection()
     {
         this.socket.initializeSocketService();
-        this.socket.onUserUpdated().pipe(filter(id => id === this.electron.user_id)).subscribe(async (user_id: string) =>
-        {
-            this.updateProfile();
-        });
+        this.socket.onLobbyIdUpdated().subscribe(() => this.updateProfileAndPlay());
         this.socket.onEvent(SocketEvent.CONNECT).subscribe(() =>
         {
             console.log('connected');
@@ -46,10 +43,10 @@ export class AppComponent implements OnInit
         {
             console.log('disconnected');
         });
-        this.updateProfile();
+        this.updateProfileAndPlay();
     }
 
-    private async updateProfile()
+    private async updateProfileAndPlay()
     {
         this.profile$ = this.api.GetProfile().pipe(map(data => data?.DATA));
         const user_data = await this.profile$.toPromise();
