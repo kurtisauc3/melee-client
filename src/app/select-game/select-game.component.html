@@ -1,0 +1,11 @@
+<ng-container *ngIf="games$ | async as games; else loadinggames">
+        <ng-container *ngFor="let game of games">
+            <button (click)="create_lobby(game._id)">
+                {{ 'PAGES.GAME.FORMAT' + game.format | translate }}
+                {{ 'PAGES.GAME.TYPE' + game.type | translate }}
+            </button>
+        </ng-container>
+</ng-container>
+<ng-template #loadinggames>
+    <p>loading games...</p>
+</ng-template>

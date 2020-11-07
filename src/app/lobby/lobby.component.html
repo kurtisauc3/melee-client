@@ -1,8 +1,18 @@
-<ng-container *ngIf="lobby$ | async as lobby"; else #loadinglobby>
-    <p>game id: {{ lobby.game_id }}</p>
-    <p>owner id: {{ lobby.owner_id }}</p>
-    <button (click)="leaveLobby()">leave lobby</button>
+<ng-container *ngIf="view$ | async as view"; else #loadingview>
+    <button [routerLink]="['/select-game']">Change game mode</button>
+
+    <p>game format: {{ 'PAGES.GAME.FORMAT' + view.game.format | translate }}</p>
+    <p>game type: {{ 'PAGES.GAME.TYPE' + view.game.type | translate }}</p>
+
+    <p>players: </p>
+        <ul *ngFor="let user of view.users">
+            <li>
+                <div>username: {{ user.username }}</div>
+                <div>role: {{ ( view.lobby.owner_id === user._id ? 'PAGES.LOBBY.OWNER' : 'PAGES.LOBBY.GUEST') | translate }}</div>
+            </li>
+        </ul>
+    <button (click)="leave_lobby()">leave lobby</button>
 </ng-container>
-<ng-template #loadinglobby>
-    loading lobby...
+<ng-template #loadingview>
+    loading view...
 </ng-template>

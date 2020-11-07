@@ -2,41 +2,46 @@
 import { Injectable } from '@angular/core';
 import { SocketEvent } from 'app/_models/enums';
 import { Observable } from 'rxjs';
-import * as socketIo from 'socket.io-client';
+import * as socket_io from 'socket.io-client';
 import { ApiService } from './api.service';
 import { ElectronService } from './electron.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class SocketService
 {
     private socket;
 
     constructor(private api: ApiService, private electron: ElectronService) {}
 
-    public initializeSocketService()
+    public initialize_socket_service()
     {
-        this.socket = socketIo(this.api.API_ENDPOINT,
+        this.socket = socket_io(this.api.API_ENDPOINT,
         {
             query: { user_id: this.electron.user_id }
         });
     }
 
-    public onLobbyIdUpdated(): Observable<string>
+    public on_lobby_updated(): Observable<string>
     {
-        return new Observable<string>(observer =>
+        return new Observable<string>(observer => this.socket.on(SocketEvent.lobby_updated, async (lobby_id: string) =>
         {
-            this.socket.on('lobby_id_updated', (data: string) => observer.next(data));
-        });
+            this.api.clear_get_lobby(lobby_id);
+            observer.next(lobby_id);
+        }));
     }
 
-    public onEvent(event: SocketEvent): Observable<any>
+    public on_user_updated(): Observable<string>
     {
-        return new Observable<SocketEvent>(observer =>
+        return new Observable<string>(observer => this.socket.on(SocketEvent.user_updated, async (user_id: string) =>
         {
-            this.socket.on(event, () => observer.next());
-        });
+            this.api.clear_get_user(user_id);
+            observer.next(user_id);
+        }));
+    }
+
+    public on_event(event: SocketEvent): Observable<any>
+    {
+        return new Observable<SocketEvent>(observer => this.socket.on(event, () => observer.next()));
     }
 
 }

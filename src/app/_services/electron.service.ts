@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ipcRenderer, webFrame, remote } from 'electron';
-import * as childProcess from 'child_process';
+import * as child_process from 'child_process';
 import * as fs from 'fs';
 import { HttpClient } from '@angular/common/http';
 
@@ -8,52 +8,52 @@ import { HttpClient } from '@angular/common/http';
 export class ElectronService
 {
 
-    ipcRenderer: typeof ipcRenderer;
-    webFrame: typeof webFrame;
+    ipc_renderer: typeof ipcRenderer;
+    web_frame: typeof webFrame;
     remote: typeof remote;
-    childProcess: typeof childProcess;
+    child_process: typeof child_process;
     fs: typeof fs;
-    authService;
+    auth_service;
 
-    get isElectron(): boolean
+    get is_electron(): boolean
     {
         return !!(window && window.process && window.process.type);
     }
 
     constructor(private http: HttpClient)
     {
-        if (this.isElectron)
+        if (this.is_electron)
         {
             this.remote = window.require('electron').remote;
-            this.ipcRenderer = window.require('electron').ipcRenderer;
-            this.webFrame = window.require('electron').webFrame;
-            this.childProcess = window.require('child_process');
+            this.ipc_renderer = window.require('electron').ipcRenderer;
+            this.web_frame = window.require('electron').webFrame;
+            this.child_process = window.require('child_process');
             this.fs = window.require('fs');
-            this.authService = this.remote.require('./auth-service');
+            this.auth_service = this.remote.require('./auth-service');
         }
     }
 
-    get auth0Domain(): string
+    get auth0_domain(): string
     {
-        return this.authService.getAuth0Domain();
+        return this.auth_service.getAuth0Domain();
     }
 
-    get bearerToken(): string
+    get bearer_token(): string
     {
-        return this.authService.getAccessToken();
+        return this.auth_service.getAccessToken();
     }
 
 
-    get userProfile()
+    get user_profile()
     {
-        return this.authService.getProfile();
+        return this.auth_service.getProfile();
     }
 
     get user_id(): string
     {
-        if (this.userProfile?.sub?.split('|')[0] === 'auth0')
+        if (this.user_profile?.sub?.split('|')[0] === 'auth0')
         {
-            return this.userProfile.sub.split('|')[1];
+            return this.user_profile.sub.split('|')[1];
         }
         return null;
     }

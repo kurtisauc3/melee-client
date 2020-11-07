@@ -1,9 +1,0 @@
-<div *ngIf="gameModes$ | async as gameModes">
-    <div class="list-group">
-        <ng-container *ngFor="let mode of gameModes">
-            <button class="list-group-item list-group-item-action list-group-item-dark" (click)="createLobby(mode._id)">
-                {{ mode.name }}
-            </button>
-        </ng-container>
-    </div>
-</div>

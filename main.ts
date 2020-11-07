@@ -2,28 +2,7 @@ import { app, ipcMain, BrowserWindow, screen, Menu, shell } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import * as authService from './auth-service';
-
-function setupMenu()
-{
-    const isMac = process.platform === 'darwin';
-    const menu = Menu.buildFromTemplate([
-        {
-            label: 'File',
-            submenu: [
-                { role: isMac ? 'close' : 'quit' },
-                {
-                    label: "Exit and Logout",
-                    click: () =>
-                    {
-                        createLogoutWindow();
-                    }
-                }
-            ]
-        },
-        { role: 'viewMenu' }
-    ])
-    Menu.setApplicationMenu(menu)
-}
+import { Titlebar, Color } from 'custom-electron-titlebar';
 
 function createAppWindow()
 {
@@ -38,6 +17,8 @@ function createAppWindow()
         y: 0,
         width: size.width,
         height: size.height,
+        titleBarStyle: "hidden",
+        frame: false,
         webPreferences: {
             nodeIntegration: true,
             allowRunningInsecureContent: (serve) ? true : false,
@@ -86,6 +67,8 @@ function createAuthWindow()
     win = new BrowserWindow({
         width: 1000,
         height: 600,
+        titleBarStyle: "hidden",
+        frame: false,
         webPreferences: {
             nodeIntegration: false,
             enableRemoteModule: false
@@ -143,7 +126,6 @@ function createLogoutWindow()
 
 async function showWindow()
 {
-    setupMenu();
     try
     {
         await authService.refreshTokens();

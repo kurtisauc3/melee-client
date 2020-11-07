@@ -4,7 +4,8 @@ import { map, share, first, scan, filter } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ElectronService } from './electron.service';
 import { CacheService } from './cache.service';
-import { ApiResponse } from '../_models/responses';
+import { ApiResponse, Game, Lobby, User, DeleteResult } from '../_models/responses';
+import { CreateLobbyRequest, JoinLobbyRequest } from '../_models/requests';
 
 @Injectable()
 export class ApiService
@@ -12,81 +13,130 @@ export class ApiService
     public API_CACHE_KEY: string = "api";
     public API_ENDPOINT: string = "http://localhost:3000";
 
-    public dataCache$: { [key: string]: Observable<any> } = {};
+    public data_cache: { [key: string]: any } = {};
+    public data_cache$: { [key: string]: Observable<any> } = {};
 
     constructor(private http: HttpClient, private electron: ElectronService, private cache: CacheService)
     {
 
     }
 
-    public initializeApiService()
+    public initialize_api_service()
     {
     }
 
-    public get authenticationHeaders(): HttpHeaders
+    public get authentication_headers(): HttpHeaders
     {
         return new HttpHeaders({
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${this.electron.bearerToken}`
+            'Authorization': `Bearer ${this.electron.bearer_token}`
         });
     }
 
-    private get(controller): Observable<ApiResponse>
+    private get(controller): Observable<any>
     {
-        if (this.dataCache$[controller]) return this.dataCache$[controller];
+        if (this.data_cache[controller]) return of(this.data_cache[controller]);
+        else if (this.data_cache$[controller]) return this.data_cache$[controller];
         else
         {
-            this.dataCache$[controller] = this.http.get<ApiResponse>(`${this.API_ENDPOINT}${controller}`, { headers: this.authenticationHeaders })
+            this.data_cache$[controller] = this.http.get<ApiResponse>(`${this.API_ENDPOINT}${controller}`, { headers: this.authentication_headers })
                 .pipe(filter(data => data?.SUCCESS), map(data =>
                 {
-                    this.dataCache$[controller] = null;
-                    return data;
+                    const mapped_data = data?.DATA;
+                    this.data_cache$[controller] = null;
+                    this.data_cache[controller] = mapped_data;
+                    this.cache.set(mapped_data, controller);
+                    return mapped_data;
                 }), share());
-            return this.dataCache$[controller];
+            return this.data_cache$[controller];
         }
     }
 
-    private post(controller, req): Observable<ApiResponse>
+    private post(controller, req): Observable<any>
     {
-        if (this.dataCache$[controller]) return this.dataCache$[controller];
+        if (this.data_cache$[controller]) return this.data_cache$[controller];
         else
         {
-            this.dataCache$[controller] = this.http.post<ApiResponse>(`${this.API_ENDPOINT}${controller}`, req, { headers: this.authenticationHeaders })
+            this.data_cache$[controller] = this.http.post<ApiResponse>(`${this.API_ENDPOINT}${controller}`, req, { headers: this.authentication_headers })
                 .pipe(filter(data => data?.SUCCESS), map(data =>
                     {
-                        this.dataCache$[controller] = null;
-                        return data;
+                        const mapped_data = data?.DATA;
+                        this.data_cache$[controller] = null;
+                        return mapped_data;
                     }), share());
-            return this.dataCache$[controller];
+            return this.data_cache$[controller];
         }
     }
 
-    public GetProfile(): Observable<ApiResponse>
+    public get get_game_all_route(): string
     {
-        return this.get(`/api/user/${this.electron.user_id}`);
+        return '/api/game/all';
     }
 
-    public GetGames(): Observable<ApiResponse>
+    public get_user_route(user_id: string): string
     {
-        return this.get('/api/game');
+        return `/api/user/${user_id}`;
     }
 
-    public GetLobby(lobbyId: string): Observable<ApiResponse>
+    public get_lobby_route(lobby_id: string): string
     {
-        return this.get(`/api/lobby/${lobbyId}`);
+        return `/api/lobby/${lobby_id}`;
     }
 
-    public CreateLobby(request): Observable<ApiResponse>
+    public get_lobby_users_route(lobby_id: string): string
+    {
+        return `/api/lobby/users/${lobby_id}`;
+    }
+
+    public get_user(user_id: string): Observable<User>
+    {
+        return this.get(this.get_user_route(user_id));
+    }
+
+    public clear_get_user(user_id: string)
+    {
+        this.cache.remove(this.get_user_route(user_id));
+        this.data_cache[this.get_user_route(user_id)] = null;
+    }
+
+    public get_game_all(): Observable<Game[]>
+    {
+        return this.get(this.get_game_all_route);
+    }
+
+    public clear_get_game_all()
+    {
+        this.cache.remove(this.get_game_all_route);
+        this.data_cache[this.get_game_all_route] = null;
+    }
+
+    public get_lobby(lobby_id: string): Observable<Lobby>
+    {
+        return this.get(this.get_lobby_route(lobby_id));
+    }
+
+    public clear_get_lobby(lobby_id: string)
+    {
+        this.cache.remove(this.get_lobby_route(lobby_id));
+        this.data_cache[this.get_lobby_route(lobby_id)] = null;
+    }
+
+    public get_lobby_users(lobby_id: string): Observable<User[]>
+    {
+        return this.get(this.get_lobby_users_route(lobby_id));
+    }
+
+    public create_lobby(request: CreateLobbyRequest): Observable<Lobby>
     {
         return this.post(`/api/lobby`, request);
     }
 
-    public JoinLobby(request): Observable<ApiResponse>
+    public join_lobby(request: JoinLobbyRequest): Observable<Lobby>
     {
-        return this.post(`/api/lobby/${request.id}`, request);
+        return this.post('/api/lobby/join', request);
     }
 
-    public LeaveLobby(): Observable<ApiResponse>
+    public leave_lobby(): Observable<DeleteResult>
     {
         return this.post('/api/lobby/leave', {});
     }

@@ -8,7 +8,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AppComponent } from './app.component';
-import { SelectGameModeComponent } from './select-game-mode/select-game-mode.component';
+import { SelectGameComponent } from './select-game/select-game.component';
 import { LobbyComponent } from './lobby/lobby.component';
 import { TeamManagerComponent } from './team-manager/team-manager.component';
 import { MatchHistoryComponent } from './match-history/match-history.component';
@@ -19,8 +19,9 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { ApiService } from './_services/api.service';
 import { CacheService } from './_services/cache.service';
 import { ElectronService } from './_services/electron.service';
-import { LobbyGuard } from './_guards/lobby.guard';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { ProfileComponent } from './profile/profile.component';
+import { SocketService } from './_services/socket.service';
 
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader
 {
@@ -28,7 +29,18 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader
 }
 
 @NgModule({
-    declarations: [AppComponent, SelectGameModeComponent, LobbyComponent, TeamManagerComponent, MatchHistoryComponent, MatchAcceptedComponent, MatchInProgressComponent, MatchCompleteComponent, DashboardComponent],
+    declarations: [
+        AppComponent,
+        SelectGameComponent,
+        LobbyComponent,
+        TeamManagerComponent,
+        MatchHistoryComponent,
+        MatchAcceptedComponent,
+        MatchInProgressComponent,
+        MatchCompleteComponent,
+        DashboardComponent,
+        ProfileComponent
+    ],
     imports: [
         BrowserModule,
         FormsModule,
@@ -43,10 +55,10 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader
         })
     ],
     providers: [
-        ElectronService,
         CacheService,
+        ElectronService,
         ApiService,
-        LobbyGuard
+        SocketService
     ],
     bootstrap: [AppComponent]
 })

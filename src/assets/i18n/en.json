@@ -4,8 +4,20 @@
         "DASHBOARD": {
             "PLAY": "Play",
             "HOME": "Home",
+            "PROFILE":"Profile",
             "MATCHHISTORY": "Match History",
             "TEAMMANAGER": "Team Manager"
+        },
+        "GAME": {
+            "FORMAT1": "1v1",
+            "FORMAT2": "2v2",
+            "TYPE1": "Quick play",
+            "TYPE2": "Custom",
+            "TYPE3":"Ranked"
+        },
+        "LOBBY": {
+            "OWNER": "Party leader",
+            "GUEST": "Guest"
         }
     }
 }

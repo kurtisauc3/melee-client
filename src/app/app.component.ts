@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ElectronService } from './_services/electron.service';
 import { SocketService } from './_services/socket.service';
 import { ApiService } from './_services/api.service';
-import { Observable } from 'rxjs';
-import { User } from './_models/responses';
+import { Observable, Subscription } from 'rxjs';
+import { Lobby, User } from './_models/responses';
 import { SocketEvent } from './_models/enums';
 import { filter, map } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -16,53 +16,32 @@ import { Router } from '@angular/router';
 })
 export class AppComponent implements OnInit
 {
-    profile$: Observable<User>;
-    ioConnection;
+    user$: Observable<User>;
 
     constructor(private electron: ElectronService,  private translate: TranslateService, private api: ApiService, private router: Router, private socket: SocketService)
     {
         this.translate.setDefaultLang('en');
-        this.api.initializeApiService();
+        this.api.initialize_api_service();
+        this.initialize_socket_connection();
+
     }
 
     ngOnInit()
     {
-        this.initializeIoConnection();
+        this.load_user();
     }
 
-    initializeIoConnection()
+    load_user()
     {
-        this.socket.initializeSocketService();
-        this.socket.onLobbyIdUpdated().subscribe(() => this.updateProfileAndPlay());
-        this.socket.onEvent(SocketEvent.CONNECT).subscribe(() =>
-        {
-            console.log('connected');
-        });
-
-        this.socket.onEvent(SocketEvent.DISCONNECT).subscribe(() =>
-        {
-            console.log('disconnected');
-        });
-        this.updateProfileAndPlay();
+        this.user$ = this.api.get_user(this.electron.user_id);
     }
 
-    private async updateProfileAndPlay()
+    initialize_socket_connection()
     {
-        this.profile$ = this.api.GetProfile().pipe(map(data => data?.DATA));
-        const user_data = await this.profile$.toPromise();
-        this.play(user_data?.lobby_id);
-    }
-
-    play(lobby_id: String)
-    {
-        if (lobby_id)
-        {
-            this.router.navigate(['lobby', lobby_id]);
-        }
-        else
-        {
-            this.router.navigate(['select-game-mode']);
-        }
+        this.socket.initialize_socket_service();
+        this.socket.on_user_updated().subscribe((lobby_id) => this.load_user());
+        this.socket.on_event(SocketEvent.connect).subscribe(() => console.log('connected'));
+        this.socket.on_event(SocketEvent.disconnect).subscribe(() => console.log('disconnected'));
     }
 
 }

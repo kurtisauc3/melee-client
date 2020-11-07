@@ -1,8 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Lobby } from 'app/_models/responses';
+import { GameFormat, GameType } from 'app/_models/enums';
+import { Game, Lobby } from 'app/_models/responses';
+import { LobbyView } from 'app/_models/views';
 import { ApiService } from 'app/_services/api.service';
-import { Observable, Subscription } from 'rxjs';
+import { SocketService } from 'app/_services/socket.service';
+import { forkJoin, Observable, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
 @Component({
@@ -10,32 +13,51 @@ import { filter, map } from 'rxjs/operators';
   templateUrl: './lobby.component.html',
   styleUrls: ['./lobby.component.scss']
 })
-export class LobbyComponent implements OnInit
+export class LobbyComponent implements OnInit, OnDestroy
 {
-    lobby$: Observable<Lobby>;
+    lobby_id: string;
+    view$: Observable<LobbyView>;
+    sub: Subscription;
 
-    constructor(private route: ActivatedRoute, private api: ApiService, private router: Router) { }
+    constructor(private route: ActivatedRoute, private api: ApiService, private router: Router, private socket: SocketService) { }
 
     ngOnInit()
     {
-        this.lobby$ = this.api.GetLobby(this.route.snapshot.params.id).pipe(map(data => data?.DATA));
+        this.lobby_id = this.route.snapshot.params.id;
+        this.load_lobby_view();
+        this.sub = this.socket.on_lobby_updated().subscribe(() => this.load_lobby_view());
     }
 
-    leaveLobby()
+    ngOnDestroy()
     {
-        this.api.LeaveLobby().pipe(map(data => data?.SUCCESS)).toPromise()
-            .then(this.onLobbyLeft.bind(this))
-            .catch(this.onLobbyLeftError.bind(this))
+        this.sub?.unsubscribe();
     }
 
-    onLobbyLeft(data)
+    load_lobby_view()
     {
-        if (data) this.api.GetProfile().toPromise();
+        this.view$ = forkJoin([
+            this.api.get_game_all(),
+            this.api.get_lobby(this.lobby_id),
+            this.api.get_lobby_users(this.lobby_id)
+        ]).pipe(map(data => {
+            return {
+                game: data[0]?.find(game => game._id === data[1].game_id) ?? new Game(),
+                lobby: data[1] ?? new Lobby(),
+                users: data[2] ?? []
+            };
+        }));
     }
-
-    onLobbyLeftError(err)
+    async leave_lobby()
     {
-        console.log(err);
+        try
+        {
+            await this.api.leave_lobby().toPromise();
+            this.router.navigate([""]);
+        }
+        catch (error)
+        {
+            console.log(error);
+        }
     }
 
 }

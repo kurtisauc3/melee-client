@@ -40,25 +40,6 @@ var electron_1 = require("electron");
 var path = require("path");
 var url = require("url");
 var authService = require("./auth-service");
-function setupMenu() {
-    var isMac = process.platform === 'darwin';
-    var menu = electron_1.Menu.buildFromTemplate([
-        {
-            label: 'File',
-            submenu: [
-                { role: isMac ? 'close' : 'quit' },
-                {
-                    label: "Exit and Logout",
-                    click: function () {
-                        createLogoutWindow();
-                    }
-                }
-            ]
-        },
-        { role: 'viewMenu' }
-    ]);
-    electron_1.Menu.setApplicationMenu(menu);
-}
 function createAppWindow() {
     var args = process.argv.slice(1);
     var serve = args.some(function (val) { return val === '--serve'; });
@@ -69,6 +50,8 @@ function createAppWindow() {
         y: 0,
         width: size.width,
         height: size.height,
+        titleBarStyle: "hidden",
+        frame: false,
         webPreferences: {
             nodeIntegration: true,
             allowRunningInsecureContent: (serve) ? true : false,
@@ -107,6 +90,8 @@ function createAuthWindow() {
     win = new electron_1.BrowserWindow({
         width: 1000,
         height: 600,
+        titleBarStyle: "hidden",
+        frame: false,
         webPreferences: {
             nodeIntegration: false,
             enableRemoteModule: false
@@ -168,19 +153,16 @@ function showWindow() {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    setupMenu();
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 3, , 4]);
+                    _a.trys.push([0, 2, , 3]);
                     return [4 /*yield*/, authService.refreshTokens()];
-                case 2:
+                case 1:
                     _a.sent();
                     return [2 /*return*/, createAppWindow()];
-                case 3:
+                case 2:
                     err_1 = _a.sent();
                     createAuthWindow();
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
             }
         });
     });

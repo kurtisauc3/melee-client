@@ -12,6 +12,11 @@
     <app-root>Loading...</app-root>
     <script>
         window.jQuery = window.$ = require('jquery');
+        const customTitlebar = require('custom-electron-titlebar');
+        new customTitlebar.Titlebar({
+            backgroundColor: customTitlebar.Color.fromHex('#FFF'),
+            menu: null
+        });
     </script>
 </body>
 </html>
