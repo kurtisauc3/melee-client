@@ -71,7 +71,15 @@ cd melee-client
 ```sh
 npm install
 ```
-4. Build for development
+4. Create env-variables.json with your information
+```
+{
+  "auth0Domain": "<YOUR_AUTH0_DOMAIN>",
+  "clientId": "<YOUR_AUTH0_CLIENT_ID>",
+  "apiIdentifier": "<YOUR_AUTH0_API_IDENTIFER>"
+}
+```
+5. Build for development
 ```sh
 npm start
 ```
