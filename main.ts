@@ -67,8 +67,6 @@ function createAuthWindow()
     win = new BrowserWindow({
         width: 1000,
         height: 600,
-        titleBarStyle: "hidden",
-        frame: false,
         webPreferences: {
             nodeIntegration: false,
             enableRemoteModule: false
@@ -108,22 +106,6 @@ function createAuthWindow()
     });
 }
 
-function createLogoutWindow()
-{
-    const logoutWindow = new BrowserWindow({
-        show: false,
-    });
-
-    logoutWindow.loadURL(authService.getLogOutUrl());
-
-    logoutWindow.on('ready-to-show', async () =>
-    {
-        logoutWindow.close();
-        await authService.logout();
-        app.quit();
-    });
-}
-
 async function showWindow()
 {
     try
@@ -153,3 +135,19 @@ try
     // Catch Error
     // throw e;
 }
+
+ipcMain.on("logout", () =>
+{
+    const logoutWindow = new BrowserWindow({
+        show: false,
+    });
+
+    logoutWindow.loadURL(authService.getLogOutUrl());
+
+    logoutWindow.on('ready-to-show', async () =>
+    {
+        logoutWindow.close();
+        await authService.logout();
+        showWindow();
+    });
+});

@@ -45,4 +45,10 @@ export class AppComponent implements OnInit
         this.socket.on_event(SocketEvent.disconnect).subscribe(() => console.log('disconnected'));
     }
 
+    logout()
+    {
+        this.electron.logout();
+    }
+
+
 }

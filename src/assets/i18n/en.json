@@ -2,6 +2,7 @@
     "PAGES": {
         "NOTFOUND": "Not found",
         "DASHBOARD": {
+            "LOGOUT":"Logout",
             "PLAY": "Play",
             "HOME": "Home",
             "PROFILE":"Profile",

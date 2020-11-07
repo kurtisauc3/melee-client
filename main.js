@@ -127,26 +127,6 @@ function createAuthWindow() {
         win = null;
     });
 }
-function createLogoutWindow() {
-    var _this = this;
-    var logoutWindow = new electron_1.BrowserWindow({
-        show: false,
-    });
-    logoutWindow.loadURL(authService.getLogOutUrl());
-    logoutWindow.on('ready-to-show', function () { return __awaiter(_this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    logoutWindow.close();
-                    return [4 /*yield*/, authService.logout()];
-                case 1:
-                    _a.sent();
-                    electron_1.app.quit();
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-}
 function showWindow() {
     return __awaiter(this, void 0, void 0, function () {
         var err_1;
@@ -179,4 +159,23 @@ catch (e) {
     // Catch Error
     // throw e;
 }
+electron_1.ipcMain.on("logout", function () {
+    var logoutWindow = new electron_1.BrowserWindow({
+        show: false,
+    });
+    logoutWindow.loadURL(authService.getLogOutUrl());
+    logoutWindow.on('ready-to-show', function () { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    logoutWindow.close();
+                    return [4 /*yield*/, authService.logout()];
+                case 1:
+                    _a.sent();
+                    showWindow();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+});
 //# sourceMappingURL=main.js.map

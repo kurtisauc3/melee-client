@@ -32,6 +32,17 @@ export class ElectronService
         }
     }
 
+    logout()
+    {
+        if (this.is_electron)
+        {
+            this.ipc_renderer.send("logout");
+            const win = this.remote.getCurrentWindow()
+            win.webContents.closeDevTools();
+            win.close();
+        }
+    }
+
     get auth0_domain(): string
     {
         return this.auth_service.getAuth0Domain();

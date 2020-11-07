@@ -1,3 +1,4 @@
+<button (click)="logout()">{{ 'PAGES.DASHBOARD.LOGOUT' | translate }}</button>
 <ng-container *ngIf="user$ | async as user; else loadinguser">
     <ul>
         <li>

@@ -141,5 +141,4 @@ Project Link: [https://github.com/kurtisauc3/melee-client](https://github.com/ku
 [license-shield]: https://img.shields.io/github/license/kurtisauc3/repo.svg?style=flat-square
 [license-url]: https://github.com/kurtisauc3/repo/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/kurtisauc3
 [product-screenshot]: images/screenshot.png
