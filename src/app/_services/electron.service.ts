@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { ipcRenderer, webFrame, remote } from 'electron';
 import * as child_process from 'child_process';
 import * as fs from 'fs';
-import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class ElectronService
@@ -20,7 +19,7 @@ export class ElectronService
         return !!(window && window.process && window.process.type);
     }
 
-    constructor(private http: HttpClient)
+    constructor()
     {
         if (this.is_electron)
         {
@@ -42,7 +41,6 @@ export class ElectronService
     {
         return this.auth_service.getAccessToken();
     }
-
 
     get user_profile()
     {

@@ -11,7 +11,10 @@ export class SocketService
 {
     private socket;
 
-    constructor(private api: ApiService, private electron: ElectronService) {}
+    constructor(
+        private api: ApiService,
+        private electron: ElectronService
+    ) {}
 
     public initialize_socket_service()
     {

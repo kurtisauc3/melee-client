@@ -10,20 +10,17 @@ import { CreateLobbyRequest, JoinLobbyRequest } from '../_models/requests';
 @Injectable()
 export class ApiService
 {
-    public API_CACHE_KEY: string = "api";
     public API_ENDPOINT: string = "http://localhost:3000";
 
+    public DATA_CACHE_KEY: string = "api";
     public data_cache: { [key: string]: any } = {};
     public data_cache$: { [key: string]: Observable<any> } = {};
 
-    constructor(private http: HttpClient, private electron: ElectronService, private cache: CacheService)
-    {
-
-    }
-
-    public initialize_api_service()
-    {
-    }
+    constructor(
+        private http: HttpClient,
+        private electron: ElectronService,
+        private cache: CacheService
+    ) {}
 
     public get authentication_headers(): HttpHeaders
     {

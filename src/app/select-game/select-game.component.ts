@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../_services/api.service';
-import { Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/internal/operators/map';
-import { filter } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { Lobby } from 'app/_models/responses';
 import { Router } from '@angular/router';
 
@@ -15,9 +13,12 @@ export class SelectGameComponent implements OnInit {
 
     games$: Observable<any[]>;
 
-    constructor(private api: ApiService, private router: Router) {}
+    constructor(
+        private api: ApiService,
+        private router: Router
+    ) {}
 
-    ngOnInit(): void
+    ngOnInit()
     {
         this.load_games();
     }

@@ -19,7 +19,6 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { ApiService } from './_services/api.service';
 import { CacheService } from './_services/cache.service';
 import { ElectronService } from './_services/electron.service';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ProfileComponent } from './profile/profile.component';
 import { SocketService } from './_services/socket.service';
 

@@ -1,12 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GameFormat, GameType } from 'app/_models/enums';
 import { Game, Lobby } from 'app/_models/responses';
 import { LobbyView } from 'app/_models/views';
 import { ApiService } from 'app/_services/api.service';
 import { SocketService } from 'app/_services/socket.service';
 import { forkJoin, Observable, Subscription } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-lobby',
@@ -19,7 +18,12 @@ export class LobbyComponent implements OnInit, OnDestroy
     view$: Observable<LobbyView>;
     sub: Subscription;
 
-    constructor(private route: ActivatedRoute, private api: ApiService, private router: Router, private socket: SocketService) { }
+    constructor(
+        private route: ActivatedRoute,
+        private api: ApiService,
+        private router: Router,
+        private socket: SocketService
+    ) {}
 
     ngOnInit()
     {
@@ -47,6 +51,7 @@ export class LobbyComponent implements OnInit, OnDestroy
             };
         }));
     }
+
     async leave_lobby()
     {
         try
