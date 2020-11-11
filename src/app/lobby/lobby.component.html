@@ -1,18 +1,32 @@
-<ng-container *ngIf="view$ | async as view"; else #loadingview>
-    <button [routerLink]="['/select-game']">Change game mode</button>
-
-    <p>game format: {{ 'PAGES.GAME.FORMAT' + view.game.format | translate }}</p>
-    <p>game type: {{ 'PAGES.GAME.TYPE' + view.game.type | translate }}</p>
-
-    <p>players: </p>
-        <ul *ngFor="let user of view.users">
-            <li>
-                <div>username: {{ user.username }}</div>
-                <div>role: {{ ( view.lobby.owner_id === user._id ? 'PAGES.LOBBY.OWNER' : 'PAGES.LOBBY.GUEST') | translate }}</div>
-            </li>
-        </ul>
-    <button (click)="leave_lobby()">leave lobby</button>
+<ng-container *ngIf="leaving; else lobbyview">
+    <button (click)="leaving = false" class="back-button"></button>
+    <div class="buttons-container">
+        <button [onFocus] tabindex="0" (click)="leave_lobby()" autofocus>{{ 'PAGES.LOBBY.LEAVE' | translate }}</button>
+    </div>
 </ng-container>
+
+<ng-template #lobbyview>
+    <button (click)="leaving = true" class="back-button"></button>
+    <ng-container *ngIf="view$ | async as view"; else #loadingview>
+        <div class="lobby-container">
+            <header>{{ 'PAGES.GAME.' + view.game._id | translate }}</header>
+            <section>
+                <div class="users-container">
+                    <div *ngFor="let user of view.users" class="user-container">
+                        <div>{{ user.username }}</div>
+                        <div>{{ ( view.lobby_owner ? 'PAGES.LOBBY.OWNER' : 'PAGES.LOBBY.GUEST') | translate }}</div>
+                    </div>
+                </div>
+                <div class="view-container">
+
+                </div>
+            </section>
+            <footer>
+                <button [onFocus] (click)="start()" class="start-button">{{ 'PAGES.LOBBY.START' | translate }}</button>
+            </footer>
+        </div>
+    </ng-container>
+</ng-template>
 <ng-template #loadingview>
-    loading view...
+    <progress>loading view...</progress>
 </ng-template>

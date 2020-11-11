@@ -10,6 +10,7 @@
         "!LICENSE.md",
         "!package.json",
         "!package-lock.json",
+        "!env-variables.json",
         "!src/",
         "!e2e/",
         "!hooks/",

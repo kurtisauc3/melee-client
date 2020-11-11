@@ -3,7 +3,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Game, Lobby } from 'app/_models/responses';
 import { LobbyView } from 'app/_models/views';
 import { ApiService } from 'app/_services/api.service';
+import { ElectronService } from 'app/_services/electron.service';
 import { SocketService } from 'app/_services/socket.service';
+import { userInfo } from 'os';
 import { forkJoin, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -14,6 +16,7 @@ import { map } from 'rxjs/operators';
 })
 export class LobbyComponent implements OnInit, OnDestroy
 {
+    leaving: boolean;
     lobby_id: string;
     view$: Observable<LobbyView>;
     sub: Subscription;
@@ -22,11 +25,13 @@ export class LobbyComponent implements OnInit, OnDestroy
         private route: ActivatedRoute,
         private api: ApiService,
         private router: Router,
-        private socket: SocketService
+        private socket: SocketService,
+        private electron: ElectronService
     ) {}
 
     ngOnInit()
     {
+        this.leaving = false;
         this.lobby_id = this.route.snapshot.params.id;
         this.load_lobby_view();
         this.sub = this.socket.on_lobby_updated().subscribe(() => this.load_lobby_view());
@@ -47,7 +52,8 @@ export class LobbyComponent implements OnInit, OnDestroy
             return {
                 game: data[0]?.find(game => game._id === data[1].game_id) ?? new Game(),
                 lobby: data[1] ?? new Lobby(),
-                users: data[2] ?? []
+                users: data[2] ?? [],
+                lobby_owner: data[1]?.owner_id === this.electron.user_id
             };
         }));
     }
@@ -57,7 +63,7 @@ export class LobbyComponent implements OnInit, OnDestroy
         try
         {
             await this.api.leave_lobby().toPromise();
-            this.router.navigate([""]);
+            this.router.navigate(["/"]);
         }
         catch (error)
         {

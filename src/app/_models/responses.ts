@@ -25,6 +25,7 @@ export class Game
     _id?: String;
     format: GameFormat;
     type: GameType;
+    disabled: boolean;
 }
 export class DeleteResult
 {

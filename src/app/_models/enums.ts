@@ -16,3 +16,22 @@ export enum GameType
     CUSTOM = 2,
     RANKED = 3
 }
+export enum GamecubeInput
+{
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT,
+    CSTICK_UP,
+    CSTICK_DOWN,
+    CSTICK_LEFT,
+    CSTICK_RIGHT,
+    A,
+    B,
+    X,
+    Y,
+    START,
+    Z,
+    L,
+    R,
+}

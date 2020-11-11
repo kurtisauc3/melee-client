@@ -2,6 +2,11 @@ import { Injectable } from '@angular/core';
 import { ipcRenderer, webFrame, remote } from 'electron';
 import * as child_process from 'child_process';
 import * as fs from 'fs';
+//import * as gca from 'gca-js';
+import { GamecubeController } from '../_models/common';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { debounceTime, filter, map } from 'rxjs/operators';
+import { GamecubeInput } from 'app/_models/enums';
 
 @Injectable()
 export class ElectronService
@@ -30,6 +35,19 @@ export class ElectronService
             this.fs = window.require('fs');
             this.auth_service = this.remote.require('./auth-service');
         }
+    }
+
+    initializeGamecubeAdapter()
+    {
+
+    }
+
+    public get on_gc_input(): Observable<GamecubeInput>
+    {
+        return new Observable<GamecubeInput>(observer =>
+        {
+            this.ipc_renderer.on("gc_input", (event, data) => observer.next(data));
+        });
     }
 
     logout()

@@ -1,26 +1,12 @@
-<button (click)="logout()">{{ 'PAGES.DASHBOARD.LOGOUT' | translate }}</button>
-<ng-container *ngIf="user$ | async as user; else loadinguser">
-    <ul>
-        <li>
-            <a [routerLink]="['/lobby/', user.lobby_id]">{{ 'PAGES.DASHBOARD.PLAY' | translate }}</a>
-        </li>
-        <li>
-            <a [routerLink]="['/']">{{ 'PAGES.DASHBOARD.HOME' | translate }}</a>
-        </li>
-        <li>
-            <a [routerLink]="['/profile']">{{ 'PAGES.DASHBOARD.PROFILE' | translate }}</a>
-        </li>
-        <li>
-            <a [routerLink]="['/match-history']">{{ 'PAGES.DASHBOARD.MATCHHISTORY' | translate }}</a>
-        </li>
-        <li>
-            <a [routerLink]="['/team-manager']">{{ 'PAGES.DASHBOARD.TEAMMANAGER' | translate }}</a>
-        </li>
-    </ul>
-    <router-outlet></router-outlet>
-</ng-container>
-<ng-template #loadinguser>
-    <p>loading user...</p>
-</ng-template>
+<div class="app-container">
+
+    <div class="router-container">
+        <router-outlet></router-outlet>
+    </div>
+
+    <div class="friends-container">
+
+    </div>
+</div>
 
 

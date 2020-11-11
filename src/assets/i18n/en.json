@@ -10,15 +10,18 @@
             "TEAMMANAGER": "Team Manager"
         },
         "GAME": {
-            "FORMAT1": "1v1",
-            "FORMAT2": "2v2",
-            "TYPE1": "Quick play",
-            "TYPE2": "Custom",
-            "TYPE3":"Ranked"
+            "quickplay_singles": "Quick Play 1v1",
+            "quickplay_doubles": "Quick Play 2v2",
+            "custom_singles": "Custom 1v1",
+            "custom_doubles": "Custom 2v2",
+            "ranked_singles":"Ranked 1v1",
+            "ranked_doubles":"Ranked 2v2"
         },
         "LOBBY": {
             "OWNER": "Party leader",
-            "GUEST": "Guest"
+            "GUEST": "Guest",
+            "LEAVE": "Leave",
+            "START": "Start"
         }
     }
 }

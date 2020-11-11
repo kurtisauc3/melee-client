@@ -9,13 +9,14 @@
   <link rel="icon" type="image/x-icon" href="assets/icons/favicon.ico">
 </head>
 <body>
-    <app-root>Loading...</app-root>
+    <app-root><progress></progress></app-root>
     <script>
         window.jQuery = window.$ = require('jquery');
         const customTitlebar = require('custom-electron-titlebar');
         new customTitlebar.Titlebar({
             backgroundColor: customTitlebar.Color.fromHex('#FFF'),
-            menu: null
+            menu: null,
+            maximizable: false
         });
     </script>
 </body>

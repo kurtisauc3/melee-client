@@ -40,16 +40,19 @@ var electron_1 = require("electron");
 var path = require("path");
 var url = require("url");
 var authService = require("./auth-service");
+var gca = require("gca-js");
+var rxjs_1 = require("rxjs");
+var operators_1 = require("rxjs/operators");
+var enums_1 = require("./src/app/_models/enums");
 function createAppWindow() {
     var args = process.argv.slice(1);
     var serve = args.some(function (val) { return val === '--serve'; });
     var electronScreen = electron_1.screen;
     var size = electronScreen.getPrimaryDisplay().workAreaSize;
     var win = new electron_1.BrowserWindow({
-        x: 0,
-        y: 0,
-        width: size.width,
-        height: size.height,
+        width: 1000,
+        height: 600,
+        resizable: false,
         titleBarStyle: "hidden",
         frame: false,
         webPreferences: {
@@ -76,6 +79,7 @@ function createAppWindow() {
     win.on('closed', function () {
         win = null;
     });
+    addGca(win);
 }
 function createAuthWindow() {
     var _this = this;
@@ -90,8 +94,7 @@ function createAuthWindow() {
     win = new electron_1.BrowserWindow({
         width: 1000,
         height: 600,
-        titleBarStyle: "hidden",
-        frame: false,
+        resizable: false,
         webPreferences: {
             nodeIntegration: false,
             enableRemoteModule: false
@@ -147,7 +150,70 @@ function showWindow() {
         });
     });
 }
+function addGca(win) {
+    try {
+        var gc_controller_1 = new rxjs_1.BehaviorSubject(null);
+        gc_controller_1.pipe(operators_1.map(function (data) {
+            var _a, _b, _c, _d, _e, _f, _g, _h;
+            for (var key in data === null || data === void 0 ? void 0 : data.buttons) {
+                if (data === null || data === void 0 ? void 0 : data.buttons[key]) {
+                    switch (key) {
+                        case "buttonA":
+                            return enums_1.GamecubeInput.A;
+                        case "buttonB":
+                            return enums_1.GamecubeInput.B;
+                        case "buttonX":
+                            return enums_1.GamecubeInput.X;
+                        case "buttonY":
+                            return enums_1.GamecubeInput.Y;
+                        case "padUp":
+                            return enums_1.GamecubeInput.UP;
+                        case "padDown":
+                            return enums_1.GamecubeInput.DOWN;
+                        case "padRight":
+                            return enums_1.GamecubeInput.RIGHT;
+                        case "padLeft":
+                            return enums_1.GamecubeInput.LEFT;
+                        case "buttonStart":
+                            return enums_1.GamecubeInput.START;
+                        case "buttonZ":
+                            return enums_1.GamecubeInput.Z;
+                        case "buttonL":
+                            return enums_1.GamecubeInput.L;
+                        case "buttonR":
+                            return enums_1.GamecubeInput.R;
+                    }
+                }
+            }
+            if (((_a = data === null || data === void 0 ? void 0 : data.axes) === null || _a === void 0 ? void 0 : _a.mainStickHorizontal) > 0.5)
+                return enums_1.GamecubeInput.RIGHT;
+            else if (((_b = data === null || data === void 0 ? void 0 : data.axes) === null || _b === void 0 ? void 0 : _b.mainStickHorizontal) < -0.5)
+                return enums_1.GamecubeInput.LEFT;
+            else if (((_c = data === null || data === void 0 ? void 0 : data.axes) === null || _c === void 0 ? void 0 : _c.mainStickVertical) > 0.5)
+                return enums_1.GamecubeInput.UP;
+            else if (((_d = data === null || data === void 0 ? void 0 : data.axes) === null || _d === void 0 ? void 0 : _d.mainStickVertical) < -0.5)
+                return enums_1.GamecubeInput.DOWN;
+            else if (((_e = data === null || data === void 0 ? void 0 : data.axes) === null || _e === void 0 ? void 0 : _e.cStickHorizontal) > 0.5)
+                return enums_1.GamecubeInput.CSTICK_RIGHT;
+            else if (((_f = data === null || data === void 0 ? void 0 : data.axes) === null || _f === void 0 ? void 0 : _f.cStickHorizontal) < -0.5)
+                return enums_1.GamecubeInput.CSTICK_LEFT;
+            else if (((_g = data === null || data === void 0 ? void 0 : data.axes) === null || _g === void 0 ? void 0 : _g.cStickVertical) > 0.5)
+                return enums_1.GamecubeInput.CSTICK_UP;
+            else if (((_h = data === null || data === void 0 ? void 0 : data.axes) === null || _h === void 0 ? void 0 : _h.cStickVertical) < -0.5)
+                return enums_1.GamecubeInput.CSTICK_DOWN;
+            else
+                return null;
+        }), operators_1.filter(function (data) { return data !== null; }), operators_1.throttleTime(200)).subscribe(function (data) { return win.webContents.send("gc_input", data); });
+        var adapter = gca.getAdaptersList()[0];
+        gca.startAdapter(adapter);
+        gca.pollData(adapter, function (data) { return gc_controller_1.next(gca.objectData(data)[0]); });
+    }
+    catch (error) {
+        console.log("gc_controller_error", error);
+    }
+}
 try {
+    electron_1.app.allowRendererProcessReuse = false;
     electron_1.app.on('ready', function () { return setTimeout(showWindow, 400); });
     electron_1.app.on('window-all-closed', function () {
         if (process.platform !== 'darwin') {

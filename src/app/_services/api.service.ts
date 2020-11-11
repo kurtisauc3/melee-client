@@ -98,7 +98,7 @@ export class ApiService
 
     public get_game_all(): Observable<Game[]>
     {
-        return this.get(this.get_game_all_route);
+        return this.get(this.get_game_all_route).pipe(map(data => data?.filter(game => !game.disabled)));
     }
 
     public clear_get_game_all()

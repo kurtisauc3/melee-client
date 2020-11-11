@@ -1,11 +1,13 @@
-<ng-container *ngIf="games$ | async as games; else loadinggames">
-        <ng-container *ngFor="let game of games">
-            <button (click)="create_lobby(game._id)">
-                {{ 'PAGES.GAME.FORMAT' + game.format | translate }}
-                {{ 'PAGES.GAME.TYPE' + game.type | translate }}
-            </button>
-        </ng-container>
-</ng-container>
-<ng-template #loadinggames>
-    <p>loading games...</p>
+<button [routerLink]="['/']" class="back-button"></button>
+
+<div class="buttons-container" *ngIf="games$ | async as games; else loading">
+    <ng-container *ngFor="let game of games; let i = index">
+        <button [onFocus] (click)="create_lobby(game)" [tabindex]="i">
+            {{ 'PAGES.GAME.' + game._id | translate }}
+        </button>
+    </ng-container>
+</div>
+
+<ng-template #loading>
+    <progress></progress>
 </ng-template>

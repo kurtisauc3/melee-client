@@ -1,17 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../_services/api.service';
 import { Observable } from 'rxjs';
-import { Lobby } from 'app/_models/responses';
+import { Game, Lobby } from 'app/_models/responses';
 import { Router } from '@angular/router';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-select-game-mode',
   templateUrl: './select-game.component.html',
   styleUrls: ['./select-game.component.scss']
 })
-export class SelectGameComponent implements OnInit {
-
-    games$: Observable<any[]>;
+export class SelectGameComponent implements OnInit
+{
+    games$: Observable<Game[]>;
 
     constructor(
         private api: ApiService,
@@ -20,19 +21,19 @@ export class SelectGameComponent implements OnInit {
 
     ngOnInit()
     {
-        this.load_games();
+        this.load_view();
     }
 
-    load_games()
+    load_view()
     {
         this.games$ = this.api.get_game_all();
     }
 
-    async create_lobby(game_id: String)
+    async create_lobby(game: Game)
     {
         try
         {
-            const lobby_data: Lobby = await this.api.create_lobby({game_id: game_id}).toPromise();
+            const lobby_data: Lobby = await this.api.create_lobby({game_id: game._id}).toPromise();
             this.router.navigate(["/lobby", lobby_data._id]);
         }
         catch (error)

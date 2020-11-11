@@ -21,6 +21,8 @@ import { CacheService } from './_services/cache.service';
 import { ElectronService } from './_services/electron.service';
 import { ProfileComponent } from './profile/profile.component';
 import { SocketService } from './_services/socket.service';
+import { OnFocusDirective } from './_directives/focus.directive';
+import { AutofocusFixModule } from 'ngx-autofocus-fix';
 
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader
 {
@@ -38,13 +40,15 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader
         MatchInProgressComponent,
         MatchCompleteComponent,
         DashboardComponent,
-        ProfileComponent
+        ProfileComponent,
+        OnFocusDirective
     ],
     imports: [
         BrowserModule,
         FormsModule,
         HttpClientModule,
         AppRoutingModule,
+        AutofocusFixModule.forRoot(),
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,
