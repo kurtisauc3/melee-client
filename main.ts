@@ -3,11 +3,15 @@ import * as path from 'path';
 import * as url from 'url';
 import * as authService from './auth-service';
 import { Titlebar, Color } from 'custom-electron-titlebar';
-import * as gca from 'gca-js';
-import { BehaviorSubject, interval, Observable } from 'rxjs';
+import { GamecubeAdapter } from './gamecube-adapter';
+import { BehaviorSubject, interval, Observable, Subscription } from 'rxjs';
 import { debounce, debounceTime, filter, map, throttleTime } from 'rxjs/operators';
 import { GamecubeController } from './src/app/_models/common';
 import { GamecubeInput } from './src/app/_models/enums';
+import * as child_process from 'child_process';
+
+let adapter: GamecubeAdapter = null;
+
 
 function createAppWindow()
 {
@@ -53,7 +57,19 @@ function createAppWindow()
         win = null;
     });
 
-    addGca(win);
+
+
+    adapter = new GamecubeAdapter();
+    adapter.gamecube_input.subscribe(data => win.webContents.send("gc_input", data));
+    app.on('browser-window-focus', (event, win) =>
+    {
+        adapter.start_adapter();
+    })
+    app.on('browser-window-blur', (event, win) =>
+    {
+        adapter.stop_adapter();
+    })
+
 }
 
 function createAuthWindow()
@@ -110,6 +126,7 @@ function createAuthWindow()
     {
         win = null;
     });
+
 }
 
 async function showWindow()
@@ -125,66 +142,6 @@ async function showWindow()
     }
 }
 
-function addGca(win: BrowserWindow)
-{
-    try
-    {
-        const gc_controller = new BehaviorSubject<GamecubeController>(null);
-        gc_controller.pipe(map(data =>
-            {
-                for (let key in data?.buttons)
-                {
-                    if (data?.buttons[key])
-                    {
-                        switch (key)
-                        {
-                            case "buttonA":
-                                return GamecubeInput.A;
-                            case "buttonB":
-                                return GamecubeInput.B;
-                            case "buttonX":
-                                return GamecubeInput.X;
-                            case "buttonY":
-                                return GamecubeInput.Y;
-                            case "padUp":
-                                return GamecubeInput.UP;
-                            case "padDown":
-                                return GamecubeInput.DOWN;
-                            case "padRight":
-                                return GamecubeInput.RIGHT;
-                            case "padLeft":
-                                return GamecubeInput.LEFT;
-                            case "buttonStart":
-                                return GamecubeInput.START;
-                            case "buttonZ":
-                                return GamecubeInput.Z;
-                            case "buttonL":
-                                return GamecubeInput.L;
-                            case "buttonR":
-                                return GamecubeInput.R;
-                        }
-                    }
-                }
-                if (data?.axes?.mainStickHorizontal > 0.5) return GamecubeInput.RIGHT;
-                else if (data?.axes?.mainStickHorizontal < -0.5) return GamecubeInput.LEFT;
-                else if (data?.axes?.mainStickVertical > 0.5) return GamecubeInput.UP;
-                else if (data?.axes?.mainStickVertical < -0.5) return GamecubeInput.DOWN;
-                else if (data?.axes?.cStickHorizontal > 0.5) return GamecubeInput.CSTICK_RIGHT;
-                else if (data?.axes?.cStickHorizontal < -0.5) return GamecubeInput.CSTICK_LEFT;
-                else if (data?.axes?.cStickVertical > 0.5) return GamecubeInput.CSTICK_UP;
-                else if (data?.axes?.cStickVertical < -0.5) return GamecubeInput.CSTICK_DOWN;
-                else return null;
-            }), filter(data => data !== null), throttleTime(200)).subscribe(data => win.webContents.send("gc_input", data));
-        const adapter = gca.getAdaptersList()[0];
-        gca.startAdapter(adapter);
-        gca.pollData(adapter,(data) => gc_controller.next(gca.objectData(data)[0]));
-    }
-    catch (error)
-    {
-        console.log("gc_controller_error", error);
-    }
-}
-
 try
 {
     app.allowRendererProcessReuse = false;
@@ -197,13 +154,11 @@ try
         }
     });
 
-} catch (e)
-{
-    // Catch Error
-    // throw e;
 }
-
-
+catch (error)
+{
+    //console.log(error)
+}
 
 ipcMain.on("logout", () =>
 {
