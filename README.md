@@ -1,5 +1,3 @@
-# phaser-electron-typescript-parcel [![Build Status](https://travis-ci.org/distantcam/phaser-electron-typescript-parcel.svg?branch=master)](https://travis-ci.org/distantcam/phaser-electron-typescript-parcel)
-
 A melee-client with the following things.
 
 - [Phaser](https://phaser.io/) 🕹️ Desktop and Mobile HTML5 game framework
