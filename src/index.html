@@ -1,23 +1,13 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Melee Client</title>
-  <base href="/">
-
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="assets/icons/favicon.ico">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title></title>
+	<link rel="stylesheet" href="style.less">
 </head>
 <body>
-    <app-root><progress></progress></app-root>
-    <script>
-        window.jQuery = window.$ = require('jquery');
-        const customTitlebar = require('custom-electron-titlebar');
-        new customTitlebar.Titlebar({
-            backgroundColor: customTitlebar.Color.fromHex('#FFF'),
-            menu: null,
-            maximizable: false
-        });
-    </script>
+	<script src="game.ts"></script>
 </body>
 </html>

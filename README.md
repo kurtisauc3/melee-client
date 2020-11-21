@@ -1,144 +1,54 @@
-<!-- PROJECT LOGO -->
-<br />
-<p align="center">
+# phaser-electron-typescript-parcel [![Build Status](https://travis-ci.org/distantcam/phaser-electron-typescript-parcel.svg?branch=master)](https://travis-ci.org/distantcam/phaser-electron-typescript-parcel)
 
-  <h1 align="center">Melee Client</h3>
+A melee-client with the following things.
 
-  <p align="center">
-    A windows client for Online SSBM matchmaking (to be integrated with slippi.gg)
-    <br />
-    <a href="https://github.com/kurtisauc3/melee-client/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/kurtisauc3/melee-client/issues">Request Feature</a>
-  </p>
-</p>
+- [Phaser](https://phaser.io/) 🕹️ Desktop and Mobile HTML5 game framework
+- [Electron](https://electronjs.org/) ⚛️ Build cross platform desktop apps with JavaScript, HTML, and CSS
+- [Parcel](https://github.com/parcel-bundler/parcel) 📦 Blazing fast, zero configuration web application bundler
+- [TypeScript](https://www.typescriptlang.org/) ⌨️ is a typed superset of JavaScript that compiles to plain JavaScript.
 
+## Installation
 
+* `git@github.com:kurtisauc3/melee-client.git`
+* `cd melee-client`
+* `yarn`
 
-<!-- TABLE OF CONTENTS -->
-## Table of Contents
-
-* [About the Project](#about-the-project)
-  * [Built With](#built-with)
-* [Getting Started](#getting-started)
-  * [Prerequisites](#prerequisites)
-  * [Installation](#installation)
-* [Usage](#usage)
-* [Roadmap](#roadmap)
-* [Contributing](#contributing)
-* [License](#license)
-* [Contact](#contact)
-* [Acknowledgements](#acknowledgements)
-
-
-
-<!-- ABOUT THE PROJECT -->
-## About The Project
-
-
-### Built With
-
-* [Electron 10.1.4](https://www.electronjs.org/)
-* [Angular 10.1.3](https://angular.io/)
-* [Auth0](https://auth0.com/)
-
-
-
-<!-- GETTING STARTED -->
-## Getting Started
-
-To get a local copy up and running follow these simple steps.
-
-### Prerequisites
-
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-```sh
-npm install npm@latest -g
-```
-
-### Installation
-
-1. Clone the repo
-```sh
-git clone https://github.com/kurtisauc3/melee-client.git
-```
-2. Change directory
-```sh
-cd melee-client
-```
-3. Install NPM packages
-```sh
-npm install
-```
-4. Create env-variables.json with your information
-```
-{
-  "auth0Domain": "<YOUR_AUTH0_DOMAIN>",
-  "clientId": "<YOUR_AUTH0_CLIENT_ID>",
-  "apiIdentifier": "<YOUR_AUTH0_API_IDENTIFER>"
-}
-```
-5. Build for development
-```sh
-npm start
-```
-
-
-
-<!-- USAGE EXAMPLES -->
 ## Usage
 
-to-do
+### Cleaning
+Run these commands to clean up the directory
+``` bash
+# Cleans up the build and dist folders
+yarn clean
 
+# Cleans up the builds, build cache, and node modules
+yarn superclean
+```
 
+### Development mode
+Run these commands to build and run the Electron app
+``` bash
+# Parcel bundles the code
+$ yarn build
 
-<!-- ROADMAP -->
-## Roadmap
+# Parcel bundles the code and watches for changes
+$ yarn watch
 
-See the [open issues](https://github.com/kurtisauc3/melee-client/issues) for a list of proposed features (and known issues).
+# Run the electron app
+$ yarn app
 
+# Run the electron app with options for a debugger to attach to the render process
+$ yarn debug
 
+# To debug the app in VS Code you can
+# - use yarn debug and run 'Electron: Renderer' in the debugger
+# or
+# - run 'Electron: All' in the debugger
+```
 
-<!-- CONTRIBUTING -->
-## Contributing
-
-Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-
-
-<!-- LICENSE -->
-## License
-
-Distributed under the MIT License. See `LICENSE` for more information.
-
-
-
-<!-- CONTACT -->
-## Contact
-
-Project Link: [https://github.com/kurtisauc3/melee-client](https://github.com/kurtisauc3/melee-client)
-
-
-
-
-
-<!-- MARKDOWN LINKS & IMAGES -->
-[contributors-shield]: https://img.shields.io/github/contributors/kurtisauc3/repo.svg?style=flat-square
-[contributors-url]: https://github.com/kurtisauc3/repo/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/kurtisauc3/repo.svg?style=flat-square
-[forks-url]: https://github.com/kurtisauc3/repo/network/members
-[stars-shield]: https://img.shields.io/github/stars/kurtisauc3/repo.svg?style=flat-square
-[stars-url]: https://github.com/kurtisauc3/repo/stargazers
-[issues-shield]: https://img.shields.io/github/issues/kurtisauc3/repo.svg?style=flat-square
-[issues-url]: https://github.com/kurtisauc3/repo/issues
-[license-shield]: https://img.shields.io/github/license/kurtisauc3/repo.svg?style=flat-square
-[license-url]: https://github.com/kurtisauc3/repo/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
-[product-screenshot]: images/screenshot.png
+### Production mode and packaging app
+Run this command to bundle code in production mode
+``` bash
+# Create executables
+$ yarn dist
+```

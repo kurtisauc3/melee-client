@@ -1,0 +1,19 @@
+{
+	"api_down_title":"Server Maintenance",
+	"api_down_message":"The Melee API is currently down for maintenance. If you are a developer, make sure you have your api running at {0}",
+    "play": "Play",
+    "profile": "Profile",
+    "friends": "Friends List",
+    "match_history": "Match History",
+    "teams": "Teams",
+    "logout": "Logout",
+    "back": "Back",
+    "quickplay_singles": "Quick Play 1v1",
+    "custom_singles": "Custom 1v1",
+    "ranked_singles": "Ranked 1v1",
+    "quickplay_doubles": "Quick Play 2v2",
+    "custom_doubles": "Custom 2v2",
+	"ranked_doubles": "Ranked 2v2",
+	"not_applicable": "N/A",
+	"lobby_owner": "Lobby owner"
+}
