@@ -34,7 +34,7 @@ export class GamecubeAdapter
 			return;
 		}
 		this.get_iface().claim();
-		this.get_outpoint().transfer([0x13], (err) =>
+		this.get_outpoint().transfer([0x13], () =>
 		{
 			this.get_inpoint().startPoll(1, 37);
 			this.get_inpoint().on('data', (data) => this.gc.next(this.get_port1_data(data)));
@@ -50,9 +50,9 @@ export class GamecubeAdapter
 		this.WORKING = true;
 		this.get_inpoint().stopPoll(() =>
 		{
-			this.get_outpoint().transfer([0x14], (err) =>
+			this.get_outpoint().transfer([0x14], () =>
 			{
-				this.get_iface().release([this.ENDPOINT_IN, this.ENDPOINT_OUT], (err) =>
+				this.get_iface().release([this.ENDPOINT_IN, this.ENDPOINT_OUT], () =>
 				{
 					this.get_adapter().close();
 					this.IS_OPEN = false;

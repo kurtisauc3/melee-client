@@ -1,48 +1,87 @@
 import 'phaser';
-import { ipcRenderer } from 'electron';
-import axios, { AxiosRequestConfig } from 'axios';
-import { cacheAdapterEnhancer, throttleAdapterEnhancer, retryAdapterEnhancer } from 'axios-extensions';
-import io from 'socket.io-client';
-import { Observable } from 'rxjs';
-import { SocketEvent } from '../models/response';
+import { bc_response, authenticate_response } from '../models';
+import env from '../../env-variables.json';
+import { http_status_code } from '../models/status';
+const { app_id, app_secret, app_version } = env;
 
 export class ApiPlugin extends Phaser.Plugins.BasePlugin
 {
-	private socket;
+	private wrapper;
 
-	API_ENDPOINT = "http://localhost:3000";
 	constructor (pluginManager)
     {
 		super(pluginManager);
-		axios.interceptors.response.use(response => response?.data?.DATA);
-		// retry twice, throttle requests by 1000ms, and cache responses
-		axios.defaults.adapter = retryAdapterEnhancer(throttleAdapterEnhancer(cacheAdapterEnhancer(axios.defaults.adapter)));
-		axios.defaults.baseURL = this.API_ENDPOINT;
-		axios.defaults.headers.common['Content-Type'] = 'application/json';
-		axios.defaults.headers.common['Authorization'] = `Bearer ${ipcRenderer.sendSync('access_token')}`;
 		this.initialize();
 	}
 
-	get user_id(): string
+	convert_to_promise(func: Function, ...args): Promise<any>
 	{
-		return ipcRenderer.sendSync('user_id');
+		return new Promise((resolve, reject) =>
+		{
+			func(...args, (response: bc_response) =>
+			{
+				if (response.status === http_status_code.OK)
+				{
+					resolve(response.data);
+				}
+				else
+				{
+					reject(response);
+				}
+			})
+		})
 	}
 
 	initialize()
 	{
-		this.socket = io(this.API_ENDPOINT,
-		{
-			query: { user_id: this.user_id }
-		});
-		// this.on_event(SocketEvent.connect).subscribe(() => console.log('connected'));
-        // this.on_event(SocketEvent.disconnect).subscribe(() => console.log('disconnected'));
-        // this.on_event(SocketEvent.user_updated).subscribe(() => console.log('user updated'));
-        // this.on_event(SocketEvent.lobby_updated).subscribe(() => console.log('lobby updated'));
+		const bc = require("braincloud");
+		this.wrapper = new bc.BrainCloudWrapper("_wrapper");
+		this.wrapper.initialize(app_id, app_secret, app_version);
 	}
 
-	public on_event(event: SocketEvent): Observable<any>
-    {
-        return new Observable<SocketEvent>(observer => this.socket.on(event, () => observer.next()));
-    }
+	get logged_in(): boolean
+	{
+		return this.get_stored_profile_id().length > 0;
+	}
+
+	authenticate_email_password(email: string, password: string): Promise<authenticate_response>
+	{
+		const force_create = true;
+		return this.convert_to_promise(this.wrapper.authenticateEmailPassword, email, password, force_create)
+	}
+
+	update_user_name(username: string): Promise<any>
+	{
+		return this.convert_to_promise(this.wrapper.playerState.updateUserName, username)
+	}
+
+	reconnect() : Promise<authenticate_response>
+	{
+		return this.convert_to_promise(this.wrapper.reconnect);
+	}
+
+	get_stored_profile_id(): string
+	{
+		return this.wrapper.getStoredProfileId();
+	}
+
+	reset_stored_profile_id(): void
+	{
+		return this.wrapper.resetStoredProfileId();
+	}
+
+	get_global_file_list(): Promise<any>
+	{
+		const folder_path = "";
+		const recurse = true;
+		return this.convert_to_promise(this.wrapper.globalFile.getGlobalFileList, folder_path, recurse)
+	}
+
+	list_friends(): Promise<any>
+	{
+		const friend_platform = this.wrapper.friend.friendPlatform.All;
+		const include_summary_data = true;
+		return this.convert_to_promise(this.wrapper.friend.listFriends, friend_platform, include_summary_data);
+	}
 
 }

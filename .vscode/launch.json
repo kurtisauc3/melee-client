@@ -9,12 +9,13 @@
 			"type": "node",
 			"request": "launch",
 			"protocol": "inspector",
+			"runtimeVersion": "10.22.1",
 			"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+			"preLaunchTask": "build",
 			"runtimeArgs": [
 				"--remote-debugging-port=9223",
 				"build/main.js"
 			],
-			"preLaunchTask": "build",
 			"env": {
 				"ELECTRON_DEBUG": "vscode"
 			},
@@ -29,14 +30,26 @@
 			"port": 9223,
 			"webRoot": "${workspaceFolder}",
 			"timeout": 10000
-		}
+		},
+		{
+			"name": "Parcel: Serve",
+			"type": "node",
+			"request": "launch",
+			"cwd": "${workspaceRoot}",
+			"runtimeVersion": "10.22.1",
+			"runtimeExecutable": "npm",
+			"runtimeArgs": [
+				"run-script", "serve"
+			]
+		},
 	],
 	"compounds": [
 		{
 			"name": "Electron: All",
 			"configurations": [
 				"Electron: Main",
-				"Electron: Renderer"
+				"Electron: Renderer",
+				"Parcel: Serve"
 			]
 		}
 	]

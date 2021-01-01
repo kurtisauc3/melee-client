@@ -6,3 +6,5 @@ export * from './profile';
 export * from './select-game';
 export * from './teams';
 export * from './lobby';
+export * from './login';
+export * from './user-name';

@@ -1,19 +1,27 @@
 import 'phaser';
 import { Titlebar, Color } from 'custom-electron-titlebar';
-import { ApiPlugin, GcPlugin, TranslatePlugin } from './plugins';
-import { MainScene, FriendsScene, SelectGameScene, TeamsScene, ProfileScene, MatchHistoryScene, LobbyScene } from './scenes';
+import { ApiPlugin, TranslatePlugin } from './plugins';
+import { LoginScene, MainScene, FriendsScene, SelectGameScene, TeamsScene, ProfileScene, MatchHistoryScene, LobbyScene, UserNameScene } from './scenes';
+import { GamecubeController, GamecubeControllerButton } from './models';
 
 const titlebar = new Titlebar({
-	backgroundColor: Color.fromHex('#2F3642'),
-	maximizable: false
+	backgroundColor: Color.TRANSPARENT,
+	maximizable: false,
+	menu: null
 });
 
 const config: GameConfig = {
+	height: window.innerHeight,
+	width: window.innerWidth,
 	type: Phaser.AUTO,
-	width: 960,
-	height: 720,
+	parent: 'overlay',
+    dom: {
+        createContainer: true
+    },
 	scene: [
 		MainScene,
+		UserNameScene,
+		LoginScene,
 		SelectGameScene,
 		ProfileScene,
 		FriendsScene,
@@ -24,11 +32,6 @@ const config: GameConfig = {
 	plugins: {
 		global: [
 			{
-				plugin: GcPlugin,
-				key: "gc_plugin",
-				start: true
-			},
-			{
 				plugin: ApiPlugin,
 				key: "api_plugin",
 				start: true
@@ -37,7 +40,7 @@ const config: GameConfig = {
 				plugin: TranslatePlugin,
 				key: "translate_plugin",
 				start: true
-			},
+			}
 		]
 	}
 };

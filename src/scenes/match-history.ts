@@ -22,6 +22,11 @@ export class MatchHistoryScene extends CommonScene
 	create()
 	{
 		super.create();
-		this.add_menu_option(this.translate_plugin.translate("back"), { select: () => this.switch_scene("MainScene"), gamecube_button_binding: GamecubeControllerButton.B});
+		this.add_menu_option(this.translate.translate("back"), { select: () => this.switch_scene(SceneKey.Main), gamecube_button_binding: GamecubeControllerButton.B});
+	}
+
+	update()
+	{
+		super.update();
 	}
 }

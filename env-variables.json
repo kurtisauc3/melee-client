@@ -1,5 +1,5 @@
 {
-  "auth0Domain": "sauc3.us.auth0.com",
-  "clientId": "EEzKsaqN8gS3To6SW8IdbZwTZb4CgIpa",
-  "apiIdentifier": "https://melee-api"
+  "app_id": "13357",
+  "app_version": "1.0.0",
+  "app_secret": "a561b66b-b9cf-443c-8343-b3bbcaf1a471"
 }

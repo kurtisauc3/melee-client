@@ -1,66 +1,20 @@
-export enum ResponseStatusCodes {
-    success = 200,
-    bad_request = 400,
-    internal_server_error = 500,
-    not_implemented = 501
-}
-export enum SocketEvent
+import {  http_status_code } from './status';
+export enum bc_reason_code
 {
-    connect = 'connect',
-    disconnect = 'disconnect',
-    user_updated = 'user_updated',
-    lobby_updated = 'lobby_updated'
+	MISSING_IDENTITY_ERROR = 40206,
+	SWITCHING_PROFILES = 40207,
+	MISSING_PROFILE_ERROR = 40208,
+	UNKNOWN_AUTH_ERROR = 40217,
+	TOKEN_DOES_NOT_MATCH_USER = 40307
 }
-
-export class DataAll
+export class bc_response
 {
-    games: MeleeGame[];
-    characters: MeleeCharacter[];
-	stages: MeleeStage[];
+	status: http_status_code;
+	reason_code?: bc_reason_code;
+	status_message?: string;
+	data?: any;
 }
-
-export enum MeleeGameFormat
+export class authenticate_response
 {
-    SINGLES = 1,
-    DOUBLES = 2
-}
-export enum MeleeGameType
-{
-    QUICKPLAY = 1,
-    CUSTOM = 2,
-    RANKED = 3
-}
-export class MeleeGame
-{
-    _id: string;
-    format: MeleeGameFormat;
-    type: MeleeGameType;
-    disabled: boolean;
-}
-export class MeleeCharacter
-{
-    _id: string;
-    color_count: number;
-}
-export class MeleeStage
-{
-    _id: string;
-    singles_neutral? = false;
-    singles_counterpick? = false;
-    doubles_neutral? = false;
-    doubles_counterpick? = false;
-}
-export class MeleeLobby
-{
-    _id?: string;
-    game_id: string;
-    owner_id: string;
-}
-export class MeleeUser
-{
-    _id?: string;
-    email: string;
-    username: string;
-    request_language: string;
-	lobby_id?: string;
+	playerName: string;
 }

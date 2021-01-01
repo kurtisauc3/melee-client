@@ -8,7 +8,12 @@
 	<link rel="stylesheet" href="style.less">
 </head>
 <body>
-	<script src="game.ts"></script>
-	<div id="overlay"></div>
+	<div class="form_container">
+		<h1>Add Friends</h1>
+		<form onsubmit="return false" id="add_friend_form">
+			<input type="text" name="friend_name" id="friend_name" required autofocus placeholder="Player Name"  />
+			<input type="submit" value="Add Friend" />
+		</form>
+	</div>
 </body>
 </html>

@@ -1,16 +1,12 @@
 import 'phaser';
-import { remote } from 'electron';
-import axios, { AxiosStatic } from 'axios';
-import { ApiPlugin, GcPlugin, TranslatePlugin } from '../plugins';
-import { GamecubeControllerButton, MenuData } from '../models';
-import { takeWhile } from 'rxjs/operators';
+import { ipcRenderer } from 'electron';
+import { ApiPlugin, TranslatePlugin } from '../plugins';
+import { SceneKey, GamecubeControllerButton, MenuData } from '../models';
 
 export class CommonScene extends Phaser.Scene
 {
-	axios: AxiosStatic;
-	api_plugin: ApiPlugin;
-	gc_plugin: GcPlugin;
-	translate_plugin: TranslatePlugin;
+	api: ApiPlugin;
+	translate: TranslatePlugin;
 
 	MARGIN: number;
 	LEFT: number;
@@ -20,7 +16,6 @@ export class CommonScene extends Phaser.Scene
 	LIGHT: string;
 	ACCENT: string;
 	DARK: string;
-	DARKER: string;
 
 	main_camera: Phaser.Cameras.Scene2D.Camera;
 
@@ -33,79 +28,71 @@ export class CommonScene extends Phaser.Scene
 	constructor(config: string | Phaser.Types.Scenes.SettingsConfig)
 	{
 		super(config);
-		this.axios = axios;
+		ipcRenderer.on("gc_button", (event, button: GamecubeControllerButton) =>
+		{
+			if (this.scene.isActive())
+			{
+				switch (button)
+				{
+					case GamecubeControllerButton.UP:
+						this.select_option(this.selected_row - 1, this.selected_column);
+						break;
+					case GamecubeControllerButton.DOWN:
+						this.select_option(this.selected_row + 1, this.selected_column);
+						break;
+					case GamecubeControllerButton.LEFT:
+						this.select_option(this.selected_row, this.selected_column - 1);
+						break;
+					case GamecubeControllerButton.RIGHT:
+						this.select_option(this.selected_row, this.selected_column + 1);
+						break;
+					case GamecubeControllerButton.A:
+						this.confirm_selection();
+					case GamecubeControllerButton.B:
+						this.confirm_selection_by_button(button);
+						break;
+				}
+			}
+		});
 	}
 
-	init(data?)
+	init()
 	{
 		// intitialize plugins
-		this.api_plugin = this.plugins.get("api_plugin") as ApiPlugin;
-		this.gc_plugin = this.plugins.get("gc_plugin") as GcPlugin;
-		this.translate_plugin = this.plugins.get("translate_plugin") as TranslatePlugin;
+		this.api = this.plugins.get("api_plugin") as ApiPlugin;
+		this.translate = this.plugins.get("translate_plugin") as TranslatePlugin;
 
-		this.MARGIN = 20;
+		this.MARGIN = 0;
 		this.LEFT = 0 + this.MARGIN;
 		this.RIGHT = this.sys.game.canvas.width - this.MARGIN;
-		this.TOP = 30 + this.MARGIN; // menu height
+		this.TOP = 30 + this.MARGIN;
 		this.BOTTOM = this.sys.game.canvas.height - this.MARGIN;
-		this.LIGHT = "#DCF2FF";
+		this.LIGHT = "#FFFFFF";
 		this.ACCENT = "#DDA01D";
-		this.DARK = "#2F3642";
-		this.DARKER = "#000A18";
+		this.DARK = "#000000";
 		this.selected_row = 0;
 		this.selected_column = 0;
 	}
 
-	preload(data?)
+	preload()
 	{
 		this.main_camera = this.cameras.main;
-		this.main_camera.backgroundColor = Phaser.Display.Color.HexStringToColor(this.DARKER);
+		this.main_camera.backgroundColor = Phaser.Display.Color.HexStringToColor(this.DARK);
 	}
 
-	create(data?)
+	create()
 	{
 		// add containers
 		this.main_container = this.add.container(this.LEFT, this.TOP).setSize(this.RIGHT - this.MARGIN, this.BOTTOM - this.TOP);
 		this.main_container_menu_containers = {};
-
-		// listen for gamecube inputs (200ms throttle)
-		this.gc_plugin.on_gc_button().pipe(takeWhile(() => this.scene.isActive())).subscribe(button =>
-		{
-			switch (button)
-			{
-				case GamecubeControllerButton.UP:
-					this.select_option(this.selected_row - 1, this.selected_column);
-					break;
-				case GamecubeControllerButton.DOWN:
-					this.select_option(this.selected_row + 1, this.selected_column);
-					break;
-				case GamecubeControllerButton.LEFT:
-					this.select_option(this.selected_row, this.selected_column - 1);
-					break;
-				case GamecubeControllerButton.RIGHT:
-					this.select_option(this.selected_row, this.selected_column + 1);
-					break;
-				case GamecubeControllerButton.A:
-					this.confirm_selection();
-				case GamecubeControllerButton.B:
-					this.confirm_selection_by_button(button);
-					break;
-			}
-			console.log(button);
-		});
 	}
 
-	api_down_error()
+	update()
 	{
-		const messageBoxOptions = {
-			type: "error",
-			title: this.translate_plugin.translate("api_down_title"),
-			message: this.translate_plugin.translate("api_down_message", [this.api_plugin.API_ENDPOINT])
-		};
-		remote.dialog.showMessageBox(messageBoxOptions);
+
 	}
 
-	add_menu_option(text: string, data: MenuData, column = 0, width = 200, height = 40)
+	add_menu_option(text: string, data: MenuData, column = 0, width = 100, height = 20)
 	{
 		// add text item (can use images)
 		let y = 0;
@@ -168,6 +155,7 @@ export class CommonScene extends Phaser.Scene
 			}
 		}
 	}
+
 	confirm_selection()
 	{
 		const menu_option = this.main_container_menu_containers[this.selected_column]?.getAt(this.selected_row);

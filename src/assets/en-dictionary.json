@@ -1,6 +1,12 @@
 {
-	"api_down_title":"Server Maintenance",
-	"api_down_message":"The Melee API is currently down for maintenance. If you are a developer, make sure you have your api running at {0}",
+	"exit":"Exit",
+	"weak_password_title": "Invalid password",
+	"weak_password_message": "Weak password. Please use a stronger password. Requirements: 8 characters, 1 lowercase, 1 uppsercase, 1 number, 1 symbol.",
+	"wrong_password_title": "Wrong username/password",
+	"wrong_password_message": "Invalid username and/or password",
+	"invalid_player_name_title":"Invalid player name",
+	"invalid_player_name_message":"Invalid player name. Please use a different player name. Requirements: min characters {0}, max characters {1}.",
+	"username": "Logged in as {0}",
     "play": "Play",
     "profile": "Profile",
     "friends": "Friends List",
@@ -8,12 +14,6 @@
     "teams": "Teams",
     "logout": "Logout",
     "back": "Back",
-    "quickplay_singles": "Quick Play 1v1",
-    "custom_singles": "Custom 1v1",
-    "ranked_singles": "Ranked 1v1",
-    "quickplay_doubles": "Quick Play 2v2",
-    "custom_doubles": "Custom 2v2",
-	"ranked_doubles": "Ranked 2v2",
-	"not_applicable": "N/A",
-	"lobby_owner": "Lobby owner"
+	"cancel": "Cancel",
+	"add_friend": "Add friend"
 }

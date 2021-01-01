@@ -8,7 +8,12 @@
 	<link rel="stylesheet" href="style.less">
 </head>
 <body>
-	<script src="game.ts"></script>
-	<div id="overlay"></div>
+	<div class="form_container">
+		<h1>Create a username</h1>
+		<form onsubmit="return false" id="user_name_form">
+			<input type="text" name="user_name" id="user_name" required autofocus placeholder="username"  />
+			<input type="submit" value="Confirm" />
+		</form>
+	</div>
 </body>
 </html>
